@@ -1,0 +1,38 @@
+@page "/registration"
+<div class="ma-6 d-flex justify-center">
+        <h3>User Registration Form</h3>
+</div>
+<div class="ma-6 d-flex justify-center">
+    <MudCard Width= "500px">
+        <MudForm Model ="registrationModel">
+            <MudCardContent>
+                    <MudTextField @bind-Value="registrationModel.FirstName"                              
+                                For="@(() => registrationModel.FirstName)"
+                                Immediate="true"
+                                Label="First Name" />
+                    <MudTextField @bind-Value="registrationModel.LastName"                              
+                                For="@(() => registrationModel.LastName)"
+                                Immediate="true"
+                                Label="Last Name" />
+                    <MudTextField @bind-Value="registrationModel.Email"                              
+                                For="@(() => registrationModel.Email)"
+                                Immediate="true"
+                                Label="Email" />           
+
+                    <MudTextField @bind-Value="registrationModel.Password"                              
+                                For="@(() => registrationModel.Password)"
+                                Immediate="true"
+                                Label="Password" />   
+                    <MudTextField @bind-Value="registrationModel.ConfirmPassword"                              
+                                For="@(() => registrationModel.ConfirmPassword)"
+                                Immediate="true"
+                                Label="Confirm Password" />   
+            </MudCardContent>
+        </MudForm>
+    </MudCard>
+</div>
+
+
+@code {
+    VM_Registration registrationModel = new VM_Registration();
+}

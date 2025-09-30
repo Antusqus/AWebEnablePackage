@@ -1,0 +1,80 @@
+@page "/jobagencyform"
+<div class="ma-6 d-flex justify-center">
+        <h3>User Registration Form</h3>
+</div>
+<div class="ma-6 d-flex justify-center">
+    <MudCard Width= "800px">
+        <MudForm Model ="jobAgencyFormModel">
+            <MudCardContent>
+                <MudRadioGroup T="VM_JobAgency.GenderOptions" Required="true" @bind-Value="jobAgencyFormModel.Gender">
+                    @foreach (VM_JobAgency.GenderOptions gender in (VM_JobAgency.GenderOptions[])Enum.GetValues(typeof(VM_JobAgency.GenderOptions)))
+                    {
+                        <MudRadio T="VM_JobAgency.GenderOptions" Value="@gender" Label="@Enum.GetName(typeof(VM_JobAgency.GenderOptions), gender)" />
+                    }
+                </MudRadioGroup>
+
+                <p>Selected: @jobAgencyFormModel.Gender</p>
+                    <MudTextField @bind-Value="jobAgencyFormModel.TeleNr"                              
+                                For="@(() => jobAgencyFormModel.TeleNr)"
+                                Immediate="true"
+                                Label="Telephone Number" />
+                    <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.Place"                              
+                                For="@(() => jobAgencyFormModel.Place)"
+                                Immediate="true"
+                                Label="Place of residence" /> 
+                    
+                    <MudRadioGroup T="VM_JobAgency.FieldOfWorkOptions" Required="true" @bind-Value="jobAgencyFormModel.FieldOfWork">
+                    @foreach (VM_JobAgency.FieldOfWorkOptions fieldOfWork in (VM_JobAgency.FieldOfWorkOptions[])Enum.GetValues(typeof(VM_JobAgency.FieldOfWorkOptions)))
+                    {
+                        <MudRadio T="VM_JobAgency.FieldOfWorkOptions" Value="@fieldOfWork" Label="@Enum.GetName(typeof(VM_JobAgency.FieldOfWorkOptions), fieldOfWork)" />
+                    }
+                    </MudRadioGroup>
+
+                    <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.Education"                              
+                                For="@(() => jobAgencyFormModel.Education)"
+                                Immediate="true"
+                                Label="Education" /> 
+
+                    <MudTextField  @bind-Value="jobAgencyFormModel.Experience"                              
+                                For="@(() => jobAgencyFormModel.Experience)"
+                                Immediate="true"
+                                Label="Work Experience" /> 
+
+                    <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.DesiredFunction"                              
+                                For="@(() => jobAgencyFormModel.DesiredFunction)"
+                                Immediate="true"
+                                Label="Desired Function" />
+
+                    <MudRadioGroup T="VM_JobAgency.MotivationOptions" Required="true" @bind-Value="jobAgencyFormModel.Motivation">
+                    @foreach (VM_JobAgency.MotivationOptions motivation in (VM_JobAgency.MotivationOptions[])Enum.GetValues(typeof(VM_JobAgency.MotivationOptions)))
+                    {
+                        <MudRadio T="VM_JobAgency.MotivationOptions" Value="@motivation" Label="@Enum.GetName(typeof(VM_JobAgency.MotivationOptions), motivation)" />
+                    }
+                    </MudRadioGroup>
+                    
+                    <MudRadioGroup T="VM_JobAgency.LocationOptions" Required="true" @bind-Value="jobAgencyFormModel.Location">
+                    @foreach (VM_JobAgency.LocationOptions location in (VM_JobAgency.LocationOptions[])Enum.GetValues(typeof(VM_JobAgency.LocationOptions)))
+                    {
+                        <MudRadio T="VM_JobAgency.LocationOptions" Value="@location" Label="@Enum.GetName(typeof(VM_JobAgency.LocationOptions), location)" />
+                    }
+                    </MudRadioGroup>
+
+                    <MudTextField @bind-Value="jobAgencyFormModel.Comments"                              
+                                For="@(() => jobAgencyFormModel.Comments)"
+                                Immediate="true"
+                                AutoGrow ="true"
+                                Lines = "3"
+                                MaxLines = "10"
+                                Label="Feedback / Comments" />
+                    
+                    
+            </MudCardContent>
+        </MudForm>
+    </MudCard>
+</div>
+
+@code 
+{
+    VM_JobAgency jobAgencyFormModel = new VM_JobAgency();
+    
+}
