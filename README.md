@@ -34,8 +34,13 @@ Please make sure to update tests as appropriate.
 
 ## TodoList
 * Create a Docker Container
+    * Docker .env file MIGHT require 'docker-compose up' command over 'docker stack deploy' 
+    * Add tangible data to container (Preferrably code-first)
+    * 
+* Connecting from Blazor Project to Docker Env
+    * Add connection string to appsettings.json
+    * 
 * 
-
 ## License
 
 Certainly not licensed.
