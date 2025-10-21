@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using DataLibrary;
 using WebEnablePackage.Client.Pages;
 using WebEnablePackage.Components;
 
@@ -12,6 +13,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddSingleton<IDataAccess, DataAccess>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
