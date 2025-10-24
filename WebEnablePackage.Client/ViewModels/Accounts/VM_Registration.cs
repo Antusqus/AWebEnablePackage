@@ -8,7 +8,7 @@ namespace WebEnablePackage.ViewModels.Accounts
         public string LastName { get; set; }
 
         [Required]
-        [StringLength(8, ErrorMessage = "Name length cannot be more than 8.")]
+        [StringLength(15, ErrorMessage = "Name length cannot be more than 15.")]
         public string UserName { get; set; }
 
         [Required]

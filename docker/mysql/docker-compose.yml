@@ -1,7 +1,8 @@
 services:
-  mysql:
-    hostname: mysql_db
-    image: mysql:latest
+  db:
+    build:
+      context: .
+      dockerfile: dockerfile
     container_name: mysql_container
     restart: always
     env_file: .env
@@ -14,4 +15,4 @@ services:
       - "3306:3306"
     volumes:
       - ./dump:/docker-entrypoint-initdb.d
-      - ./mysql_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql/

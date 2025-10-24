@@ -4,6 +4,8 @@ WebEnablePackage is a C# Blazor project that allows users registration to a job 
 
 ## Installation
 
+Clone the repo.
+
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
@@ -37,6 +39,8 @@ Please make sure to update tests as appropriate.
     * Docker .env file MIGHT require 'docker-compose up' command over 'docker stack deploy' 
     * Add tangible data to container (Preferrably code-first)
 
+* Cookies?
+
 * Connecting from Blazor Project to Docker Env
     * Add connection string to appsettings.json
     * Get connection running from project to docker container
@@ -44,6 +48,13 @@ Please make sure to update tests as appropriate.
 * Insert and retrieve data from Database
     * Razorpage
     * Fix Button Event Handler in Registration.razor
+
+## Issues
+* Site errors when database down
+* Exception thrown: 'System.InvalidOperationException' in System.Private.CoreLib.dll: 'Connection must be valid and open.' on Registration.razor
+    * Possibly due to MultipleActiveResultSets not being set + terminal having active connection with docker db?
+
+
 ## License
 
 Certainly not licensed.

@@ -55,16 +55,20 @@
             </MudCard>
         </div>
 </section>
-@* 
+
+<section id="UserTable">
             <MudSimpleTable class="d-flex justify-end">
-                @foreach (var item in registeredUsers)
+                @foreach (VM_Registration item in registeredUsers)
                 {
                     <tr>
                         <td>@item.FirstName</td>
                         <td>@item.LastName</td>
                     </tr>
-                })
-            </MudSimpleTable> *@
+                }
+            </MudSimpleTable>
+</section>
+
+
 
 
 
@@ -74,13 +78,14 @@
     List<VM_Registration> registeredUsers = new List<VM_Registration>();
     protected override async Task OnInitializedAsync()
     {
-        string sql = "SELECT * FROM TestPotato";
-        var data = await _data.LoadData<VM_Registration, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+        string sql = "SELECT * FROM Users";
+        List<VM_Registration>? data = await _data.LoadData<VM_Registration, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+        registeredUsers = data;
     }
 
     private async Task RegisterUser()
     {
-        string sql = "Insert INTO TestPotato (Roots, Season) values (@FirstName, @LastName)";
+        string sql = "Insert INTO Users (FirstName, LastName) values (@FirstName, @LastName)";
 
         await _data.SaveData(sql, new {FirstName = registrationModel.FirstName, LastName = registrationModel.LastName }, _config.GetConnectionString(name: "MySQLConnection"));
 
