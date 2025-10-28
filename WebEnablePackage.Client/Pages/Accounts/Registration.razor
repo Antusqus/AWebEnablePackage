@@ -2,8 +2,7 @@
 @using DataLibrary
 @using WebEnablePackage.ViewModels
 
-@inject IDataAccess _data
-@inject IConfiguration _config
+@inject HttpClient Http
 
 
 
@@ -11,61 +10,64 @@
         <h3>User Registration Form</h3>
 </div>
 <section id="registration-form">
-        <div class="ma-6 d-flex justify-center">
-            <MudCard Width= "500px">
-                <MudForm Model ="registrationModel">
-                    <MudCardContent>
-                            <MudTextField @bind-Value="registrationModel.FirstName"                              
-                            For="@(() => registrationModel.FirstName)"
-                            Immediate="true"
-                            Label="First Name" />
+    <div class="ma-6 d-flex justify-center">
+        <MudCard Width= "500px">
+            <MudForm Model ="registrationModel">
+                <MudCardContent>
+                        <MudTextField @bind-Value="registrationModel.FirstName"                              
+                        For="@(() => registrationModel.FirstName)"
+                        Immediate="true"
+                        Label="First Name" />
 
-                            <MudTextField @bind-Value="registrationModel.LastName"                              
-                            For="@(() => registrationModel.LastName)"
-                            Immediate="true"
-                            Label="Last Name" />
+                        <MudTextField @bind-Value="registrationModel.LastName"                              
+                        For="@(() => registrationModel.LastName)"
+                        Immediate="true"
+                        Label="Last Name" />
 
-                            <MudTextField @bind-Value="registrationModel.UserName"                              
-                            For="@(() => registrationModel.UserName)"
-                            Immediate="true"
-                            Label="UserName" 
-                            HelperText="Max. 8 characters"/>
+                        <MudTextField @bind-Value="registrationModel.UserName"                              
+                        For="@(() => registrationModel.UserName)"
+                        Immediate="true"
+                        Label="UserName" 
+                        HelperText="Max. 8 characters"/>
 
-                            <MudTextField @bind-Value="registrationModel.Email"                              
-                            For="@(() => registrationModel.Email)"
-                            Immediate="true"
-                            Label="Email" />           
+                        <MudTextField @bind-Value="registrationModel.Email"                              
+                        For="@(() => registrationModel.Email)"
+                        Immediate="true"
+                        Label="Email" />           
 
-                            <MudTextField @bind-Value="registrationModel.Password"                              
-                            For="@(() => registrationModel.Password)"
-                            Immediate="true"
-                            Label="Password" 
-                            HelperText="Choose a strong password"
-                            InputType="InputType.Password"/>
+                        <MudTextField @bind-Value="registrationModel.Password"                              
+                        For="@(() => registrationModel.Password)"
+                        Immediate="true"
+                        Label="Password" 
+                        HelperText="Choose a strong password"
+                        InputType="InputType.Password"/>
 
-                            <MudTextField @bind-Value="registrationModel.ConfirmPassword"                              
-                            For="@(() => registrationModel.ConfirmPassword)"
-                            Immediate="true"
-                            Label="Confirm Password" 
-                            HelperText="Repeat the password"
-                            InputType="InputType.Password"/>   
-                    </MudCardContent>
-                    <MudButton ButtonType ="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="@(RegisterUser)">Submit</MudButton>
-                </MudForm>
-            </MudCard>
-        </div>
+                        <MudTextField @bind-Value="registrationModel.ConfirmPassword"                              
+                        For="@(() => registrationModel.ConfirmPassword)"
+                        Immediate="true"
+                        Label="Confirm Password" 
+                        HelperText="Repeat the password"
+                        InputType="InputType.Password"/>   
+                </MudCardContent>
+                <MudButton ButtonType ="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="@(RegisterUser)">Submit</MudButton>
+            </MudForm>
+        </MudCard>
+    </div>
 </section>
 
+
 <section id="UserTable">
-            <MudSimpleTable class="d-flex justify-end">
-                @foreach (VM_Registration item in registeredUsers)
-                {
-                    <tr>
-                        <td>@item.FirstName</td>
-                        <td>@item.LastName</td>
-                    </tr>
-                }
-            </MudSimpleTable>
+    <div>
+        <MudSimpleTable class="d-flex justify-end">
+            @foreach (VM_Registration item in registeredUsers)
+            {
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                </tr>
+            }
+        </MudSimpleTable>
+    </div>   
 </section>
 
 
@@ -73,22 +75,23 @@
 
 
 @code {
+
+    
+    
     bool success;
     private VM_Registration registrationModel = new VM_Registration();
     List<VM_Registration> registeredUsers = new List<VM_Registration>();
-    protected override async Task OnInitializedAsync()
+ protected override async Task OnInitializedAsync()
     {
-        string sql = "SELECT * FROM Users";
-        List<VM_Registration>? data = await _data.LoadData<VM_Registration, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
-        registeredUsers = data;
+        List<VM_Registration>? data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
+        registeredUsers = data ?? new List<VM_Registration>();
     }
 
     private async Task RegisterUser()
     {
-        string sql = "Insert INTO Users (FirstName, LastName) values (@FirstName, @LastName)";
-
-        await _data.SaveData(sql, new {FirstName = registrationModel.FirstName, LastName = registrationModel.LastName }, _config.GetConnectionString(name: "MySQLConnection"));
-
+        await Http.PostAsJsonAsync(requestUri: "api/users", registrationModel);
+        List<VM_Registration>? data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
+        registeredUsers = data ?? new List<VM_Registration>();
     }
 
     private void OnValidSubmit(EditContext context)

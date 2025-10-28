@@ -25,4 +25,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebEnablePackage.ViewModels\WebEnablePackage.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

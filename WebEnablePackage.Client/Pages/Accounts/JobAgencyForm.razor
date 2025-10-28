@@ -1,4 +1,10 @@
 @page "/jobagencyform"
+@using DataLibrary
+@using WebEnablePackage.ViewModels
+
+@inject IDataAccess _data
+@inject IConfiguration _config
+
 <div class="ma-6 d-flex justify-center">
         <h3>User Registration Form</h3>
 </div>
@@ -78,7 +84,39 @@
 
 @code 
 {
+
+    bool success;
     VM_JobAgency jobAgencyFormModel = new VM_JobAgency();
+    List<VM_JobAgency> VMFields = new List<VM_JobAgency>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string sql = "SELECT * FROM Users";
+
+        List<VM_JobAgency>? data = await _data.LoadData<VM_JobAgency, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+        VMFields = data;
+    }
+
+        private async Task SubmitFields()
+    {
+
+        string sql = "Insert INTO Users (FirstName, LastName) values (@FirstName, @LastName)";
+
+        await _data.SaveData(sql, 
+        new {   Gender = jobAgencyFormModel.Gender, 
+                TeleNr = jobAgencyFormModel.TeleNr, 
+                Place = jobAgencyFormModel.Place, 
+                FieldOfWork = jobAgencyFormModel.FieldOfWork, 
+                Education = jobAgencyFormModel.Education, 
+                Experience = jobAgencyFormModel.Experience, 
+                DesiredFunction = jobAgencyFormModel.DesiredFunction, 
+                Motivation = jobAgencyFormModel.Motivation, 
+                Location = jobAgencyFormModel.Location, 
+            
+            }, 
+        _config.GetConnectionString(name: "MySQLConnection"));
+
+    }
 
     private string GetEnumDisplayName(Enum value)
     {
@@ -88,4 +126,10 @@
             .FirstOrDefault();
         return attribute?.Name ?? value.ToString();
     }
+
+        private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+    }
+
 }

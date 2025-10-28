@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataLibrary.csproj" />
+    <ProjectReference Include="..\WebEnablePackage.ViewModels\WebEnablePackage.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>
