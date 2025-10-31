@@ -14,7 +14,7 @@ Install Docker.
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
 
 ```bash
-pip install foobar
+pip install docker
 ```
 
 ## Usage
@@ -55,7 +55,8 @@ Please make sure to update tests as appropriate.
     * [x] Fix Button Event Handler in Registration.razor ?
     * [ ] Input Sanitization
     * [ ] SQL Security
-    * [ ] Get/Post data (and not have it crash)
+    * [x] Get/Post data (and not have it crash)
+        * [] Post full form data. JobAgencyForm somehow not adding to database.
 
 ## Issues
 * Site errors when database down

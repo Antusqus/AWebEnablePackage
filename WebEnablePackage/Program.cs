@@ -6,6 +6,8 @@ using System.Net.Http;
 using DataLibrary;
 using WebEnablePackage.Client.Pages;
 using WebEnablePackage.Components;
+using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,13 @@ builder.Services.AddHttpClient("api", client =>
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBase") ?? "http://localhost:5142");
 });
 builder.Services.AddScoped(serviceProvider => serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
+// builder.Services.ConfigureHttpJsonOptions(opts =>
+// {
+//     opts.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+// });
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,7 +49,6 @@ else
 }
 
 app.UseHttpsRedirection();
-
 
 app.UseAntiforgery();
 
@@ -108,6 +116,24 @@ app.MapPost("/api/users", async (WebEnablePackage.ViewModels.VM_Registration mod
     string sql = "INSERT INTO Users (FirstName, LastName) VALUES (@FirstName, @LastName)";
     await da.SaveData(sql, new { model.FirstName, model.LastName }, conn);
     return Results.Created("/api/users", null);
+});
+
+// Typed endpoint for JobAgency views: returns VM_JobAgency projection (Gender, Experience etc.)
+app.MapGet("/api/users/jobagency", async (DataLibrary.IDataAccess da, IConfiguration cfg) =>
+{
+    var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
+    // select the columns that map to VM_JobAgency; Dapper will map numeric enum columns to enum properties
+    string sql = "SELECT Id, FirstName, LastName, Gender, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location, Comments FROM Users";
+    var data = await da.LoadData<WebEnablePackage.ViewModels.VM_JobAgency, dynamic>(sql, new { }, conn);
+    return Results.Ok(data);
+});
+
+app.MapPost("/api/users/jobagency", async (WebEnablePackage.ViewModels.VM_JobAgency model, DataLibrary.IDataAccess da, IConfiguration cfg) =>
+{
+    var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
+    string sql = "INSERT INTO Users (FirstName, LastName, Gender, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location,) VALUES (@FirstName, @LastName, @Gender, @TeleNr, @Place, @FieldOfWork, @Education, @Experience, @DesiredFunction, @Motivation, @Location)";
+    await da.SaveData(sql, new { model.Gender, model.TeleNr, model.Place, model.FieldOfWork ,model.Education, model.Experience, model.DesiredFunction, model.Motivation, model.Location   }, conn);
+    return Results.Created("/api/users/jobagency", null);
 });
 
 app.Run();

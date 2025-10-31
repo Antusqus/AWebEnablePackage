@@ -1,59 +1,80 @@
 @page "/jobagencyform"
 @using DataLibrary
+@using System.Diagnostics
 @using WebEnablePackage.ViewModels
 
-@inject IDataAccess _data
-@inject IConfiguration _config
+@inject HttpClient Http
 
 <div class="ma-6 d-flex justify-center">
         <h3>User Registration Form</h3>
 </div>
 <div class="ma-6 d-flex justify-center">
     <MudCard Width= "800px">
-        <MudForm Model ="jobAgencyFormModel">
+        <MudForm Model ="userDataJobModel">
             <MudCardContent>
-                <MudRadioGroup T="VM_JobAgency.GenderOptions" Required="true" @bind-Value="jobAgencyFormModel.Gender">
+                <MudTextField @bind-Value="userDataJobModel.FirstName"                              
+                For="@(() => userDataJobModel.FirstName)"
+                Immediate="true"
+                Label="First Name" />
+
+                <MudTextField @bind-Value="userDataJobModel.LastName"                              
+                For="@(() => userDataJobModel.LastName)"
+                Immediate="true"
+                Label="Last Name" />
+
+                <MudTextField @bind-Value="userDataJobModel.UserName"                              
+                For="@(() => userDataJobModel.UserName)"
+                Immediate="true"
+                Label="UserName" 
+                HelperText="Max. 8 characters"/>
+
+                <MudTextField @bind-Value="userDataJobModel.Email"                              
+                For="@(() => userDataJobModel.Email)"
+                Immediate="true"
+                Label="Email" />  
+                
+                <MudRadioGroup T="VM_JobAgency.GenderOptions" Required="true" @bind-Value="userDataJobModel.Gender">
                     @foreach (VM_JobAgency.GenderOptions gender in (VM_JobAgency.GenderOptions[])Enum.GetValues(typeof(VM_JobAgency.GenderOptions)))
                     {
                         <MudRadio T="VM_JobAgency.GenderOptions" Value="@gender" Label="@GetEnumDisplayName(gender)" />
                     }
                 </MudRadioGroup>
             
-                <MudTextField @bind-Value="jobAgencyFormModel.TeleNr"                              
-                            For="@(() => jobAgencyFormModel.TeleNr)"
+                <MudTextField @bind-Value="userDataJobModel.TeleNr"                              
+                            For="@(() => userDataJobModel.TeleNr)"
                             Immediate="true"
                             Label="Telephone Number" />
 
 
-                <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.Place"                              
-                            For="@(() => jobAgencyFormModel.Place)"
+                <MudTextField Required="true"  @bind-Value="userDataJobModel.Place"                              
+                            For="@(() => userDataJobModel.Place)"
                             Immediate="true"
                             Label="Place of residence" /> 
 
 
-                <MudRadioGroup T="VM_JobAgency.FieldOfWorkOptions" Required="true" @bind-Value="jobAgencyFormModel.FieldOfWork">
+                <MudRadioGroup T="VM_JobAgency.FieldOfWorkOptions" Required="true" @bind-Value="userDataJobModel.FieldOfWork">
                 @foreach (VM_JobAgency.FieldOfWorkOptions fieldOfWork in (VM_JobAgency.FieldOfWorkOptions[])Enum.GetValues(typeof(VM_JobAgency.FieldOfWorkOptions)))
                 {
                     <MudRadio T="VM_JobAgency.FieldOfWorkOptions" Value="@fieldOfWork" Label="@GetEnumDisplayName(fieldOfWork)" />
                 }
                 </MudRadioGroup>
 
-                <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.Education"                              
-                            For="@(() => jobAgencyFormModel.Education)"
+                <MudTextField Required="true"  @bind-Value="userDataJobModel.Education"                              
+                            For="@(() => userDataJobModel.Education)"
                             Immediate="true"
                             Label="Education" /> 
 
-                <MudTextField  @bind-Value="jobAgencyFormModel.Experience"                              
-                            For="@(() => jobAgencyFormModel.Experience)"
+                <MudTextField  @bind-Value="userDataJobModel.Experience"                              
+                            For="@(() => userDataJobModel.Experience)"
                             Immediate="true"
                             Label="Work Experience" /> 
 
-                <MudTextField Required="true"  @bind-Value="jobAgencyFormModel.DesiredFunction"                              
-                            For="@(() => jobAgencyFormModel.DesiredFunction)"
+                <MudTextField Required="true"  @bind-Value="userDataJobModel.DesiredFunction"                              
+                            For="@(() => userDataJobModel.DesiredFunction)"
                             Immediate="true"
                             Label="Desired Function" />
 
-                <MudRadioGroup T="VM_JobAgency.MotivationOptions" Required="true" @bind-Value="jobAgencyFormModel.Motivation">
+                <MudRadioGroup T="VM_JobAgency.MotivationOptions" Required="true" @bind-Value="userDataJobModel.Motivation">
                 @foreach (VM_JobAgency.MotivationOptions motivation in (VM_JobAgency.MotivationOptions[])Enum.GetValues(typeof(VM_JobAgency.MotivationOptions)))
                 {
                     <MudRadio T="VM_JobAgency.MotivationOptions" Value="@motivation" Label="@GetEnumDisplayName(motivation)" />
@@ -61,15 +82,15 @@
                 </MudRadioGroup>
 
                 
-                <MudRadioGroup T="VM_JobAgency.LocationOptions" Required="true" @bind-Value="jobAgencyFormModel.Location">
+                <MudRadioGroup T="VM_JobAgency.LocationOptions" Required="true" @bind-Value="userDataJobModel.Location">
                 @foreach (VM_JobAgency.LocationOptions location in (VM_JobAgency.LocationOptions[])Enum.GetValues(typeof(VM_JobAgency.LocationOptions)))
                 {
                     <MudRadio T="VM_JobAgency.LocationOptions" Value="@location" Label="@GetEnumDisplayName(location)" />
                 }
                 </MudRadioGroup>
 
-                <MudTextField @bind-Value="jobAgencyFormModel.Comments"                              
-                            For="@(() => jobAgencyFormModel.Comments)"
+                <MudTextField @bind-Value="userDataJobModel.Comments"                              
+                            For="@(() => userDataJobModel.Comments)"
                             Immediate="true"
                             AutoGrow ="true"
                             Lines = "3"
@@ -78,44 +99,53 @@
                 
                 
             </MudCardContent>
+                <MudButton ButtonType ="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="@(SubmitFields)">Submit</MudButton>
+
         </MudForm>
     </MudCard>
+
+
 </div>
+
+    <section id="UserTable">
+    <div>
+        <MudSimpleTable class="d-flex justify-end">
+            @foreach (VM_JobAgency item in userJobData)
+            {
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Gender</td>
+                    <td>@item.Experience</td>
+                </tr>
+            }
+        </MudSimpleTable>
+    </div>   
+    </section>
 
 @code 
 {
 
     bool success;
-    VM_JobAgency jobAgencyFormModel = new VM_JobAgency();
-    List<VM_JobAgency> VMFields = new List<VM_JobAgency>();
+    VM_JobAgency userDataJobModel = new VM_JobAgency();
+    List<VM_JobAgency> userJobData = new List<VM_JobAgency>();
 
     protected override async Task OnInitializedAsync()
     {
-        string sql = "SELECT * FROM Users";
-
-        List<VM_JobAgency>? data = await _data.LoadData<VM_JobAgency, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
-        VMFields = data;
+        List<VM_JobAgency>? data = await Http.GetFromJsonAsync<List<VM_JobAgency>>(requestUri: "api/users/jobagency");
+        userJobData = data ?? new List<VM_JobAgency>();
     }
 
-        private async Task SubmitFields()
+    private async Task SubmitFields()
     {
 
-        string sql = "Insert INTO Users (FirstName, LastName) values (@FirstName, @LastName)";
-
-        await _data.SaveData(sql, 
-        new {   Gender = jobAgencyFormModel.Gender, 
-                TeleNr = jobAgencyFormModel.TeleNr, 
-                Place = jobAgencyFormModel.Place, 
-                FieldOfWork = jobAgencyFormModel.FieldOfWork, 
-                Education = jobAgencyFormModel.Education, 
-                Experience = jobAgencyFormModel.Experience, 
-                DesiredFunction = jobAgencyFormModel.DesiredFunction, 
-                Motivation = jobAgencyFormModel.Motivation, 
-                Location = jobAgencyFormModel.Location, 
-            
-            }, 
-        _config.GetConnectionString(name: "MySQLConnection"));
-
+    await Http.PostAsJsonAsync(requestUri: "api/users/jobagency", userDataJobModel);
+    List<VM_JobAgency>? data = await Http.GetFromJsonAsync<List<VM_JobAgency>>(requestUri: "api/users/jobagency");
+    userJobData = data ?? new List<VM_JobAgency>();
+    if (data == null)
+    {
+        Debug.WriteLine("No data found from supplying Post");
+    }
     }
 
     private string GetEnumDisplayName(Enum value)

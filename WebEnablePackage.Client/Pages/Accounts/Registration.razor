@@ -58,7 +58,7 @@
 
 <section id="UserTable">
     <div>
-        <MudSimpleTable class="d-flex justify-end">
+        <MudSimpleTable class="d-flex justify-center">
             @foreach (VM_Registration item in registeredUsers)
             {
                 <tr>
@@ -83,14 +83,14 @@
     List<VM_Registration> registeredUsers = new List<VM_Registration>();
  protected override async Task OnInitializedAsync()
     {
-        List<VM_Registration>? data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
+        List<VM_Registration> ?data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
         registeredUsers = data ?? new List<VM_Registration>();
     }
 
     private async Task RegisterUser()
     {
         await Http.PostAsJsonAsync(requestUri: "api/users", registrationModel);
-        List<VM_Registration>? data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
+        List<VM_Registration> ?data = await Http.GetFromJsonAsync<List<VM_Registration>>(requestUri: "api/users");
         registeredUsers = data ?? new List<VM_Registration>();
     }
 
