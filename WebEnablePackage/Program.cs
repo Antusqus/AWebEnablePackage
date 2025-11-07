@@ -114,14 +114,6 @@ app.MapGet("/api/users", async (HttpContext context, DataLibrary.IDataAccess dat
     return Results.Ok((List<dynamic>)returnData);
 });
 
-app.MapPost("/api/users", async (WebEnablePackage.ViewModels.VM_Registration model, DataLibrary.IDataAccess da, IConfiguration cfg) =>
-{
-    var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
-    string sql = "INSERT INTO Users (FirstName, LastName, UserName, Email) VALUES (@FirstName, @LastName, @UserName, @Email)";
-    await da.SaveData(sql, new { model.FirstName, model.LastName }, conn);
-    return Results.Created("/api/users", null);
-});
-
 // Typed endpoint for JobAgency views: returns VM_JobAgency projection (Gender, Experience etc.)
 app.MapGet("/api/users/jobagency", async (DataLibrary.IDataAccess da, IConfiguration cfg) =>
 {
@@ -136,14 +128,15 @@ app.MapPost("/api/users/jobagency", async (WebEnablePackage.ViewModels.VM_JobAge
 {
     var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
     string sql = "INSERT INTO Users " +
-    "(FirstName, LastName, Gender, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location, Comments) " +
+    "(FirstName, LastName, Gender, Email, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location, Comments) " +
     "VALUES " +
-    "(@FirstName, @LastName, @Gender, @TeleNr, @Place, @FieldOfWork, @Education, @Experience, @DesiredFunction, @Motivation, @Location, @Comments)";
+    "(@FirstName, @LastName, @Gender, @Email, @TeleNr, @Place, @FieldOfWork, @Education, @Experience, @DesiredFunction, @Motivation, @Location, @Comments)";
     await da.SaveData(sql, new
     {
         model.FirstName,
         model.LastName,
         model.Gender,
+        model.Email,
         model.TeleNr,
         model.Place,
         model.FieldOfWork,

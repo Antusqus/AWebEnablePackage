@@ -56,6 +56,8 @@ Pull requests are welcome. For major changes, open an issue first.
 - Allow users to delete records outside of direct database connection (for cleaning up data without accessing the DB directly))
 - Improve docs for running hosted WebAssembly vs. standalone
 - Review and fix any transient bugs with forms (e.g., JobAgencyForm add/save issues)
+- Implement user authentication and authorization
+- Add email to database.
 
 ## License
 Not currently licensed.
