@@ -26,6 +26,7 @@ builder.Services.AddHttpClient("api", client =>
     // Default to the HTTP launch port from launchSettings.json (5142) for local dev.
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ApiBase") ?? "http://localhost:5142");
 });
+
 builder.Services.AddScoped(serviceProvider => serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 // builder.Services.ConfigureHttpJsonOptions(opts =>
 // {
@@ -68,17 +69,20 @@ app.MapGet("/api/users", async (HttpContext context, DataLibrary.IDataAccess dat
 
     var allowed = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
+        "Gender",
         "FirstName",
         "LastName",
         "UserName",
         "Email",
+        "TeleNr",
+        "Place",
         "FieldOfWork",
         "Education",
         "Experience",
         "DesiredFunction",
         "Motivation",
-        "Location"
-
+        "Location",
+        "Comments"
     };
 
     var colsQuery = context.Request.Query["columns"].ToString();
@@ -113,7 +117,7 @@ app.MapGet("/api/users", async (HttpContext context, DataLibrary.IDataAccess dat
 app.MapPost("/api/users", async (WebEnablePackage.ViewModels.VM_Registration model, DataLibrary.IDataAccess da, IConfiguration cfg) =>
 {
     var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
-    string sql = "INSERT INTO Users (FirstName, LastName) VALUES (@FirstName, @LastName)";
+    string sql = "INSERT INTO Users (FirstName, LastName, UserName, Email) VALUES (@FirstName, @LastName, @UserName, @Email)";
     await da.SaveData(sql, new { model.FirstName, model.LastName }, conn);
     return Results.Created("/api/users", null);
 });
@@ -131,8 +135,25 @@ app.MapGet("/api/users/jobagency", async (DataLibrary.IDataAccess da, IConfigura
 app.MapPost("/api/users/jobagency", async (WebEnablePackage.ViewModels.VM_JobAgency model, DataLibrary.IDataAccess da, IConfiguration cfg) =>
 {
     var conn = cfg.GetConnectionString("MySQLConnection") ?? throw new InvalidOperationException("Connection string 'MySQLConnection' is not configured.");
-    string sql = "INSERT INTO Users (FirstName, LastName, Gender, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location,) VALUES (@FirstName, @LastName, @Gender, @TeleNr, @Place, @FieldOfWork, @Education, @Experience, @DesiredFunction, @Motivation, @Location)";
-    await da.SaveData(sql, new { model.Gender, model.TeleNr, model.Place, model.FieldOfWork ,model.Education, model.Experience, model.DesiredFunction, model.Motivation, model.Location   }, conn);
+    string sql = "INSERT INTO Users " +
+    "(FirstName, LastName, Gender, TeleNr, Place, FieldOfWork, Education, Experience, DesiredFunction, Motivation, Location, Comments) " +
+    "VALUES " +
+    "(@FirstName, @LastName, @Gender, @TeleNr, @Place, @FieldOfWork, @Education, @Experience, @DesiredFunction, @Motivation, @Location, @Comments)";
+    await da.SaveData(sql, new
+    {
+        model.FirstName,
+        model.LastName,
+        model.Gender,
+        model.TeleNr,
+        model.Place,
+        model.FieldOfWork,
+        model.Education,
+        model.Experience,
+        model.DesiredFunction,
+        model.Motivation,
+        model.Location,
+        model.Comments
+    }, conn);
     return Results.Created("/api/users/jobagency", null);
 });
 

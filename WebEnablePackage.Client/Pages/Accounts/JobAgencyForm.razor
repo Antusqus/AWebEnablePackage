@@ -9,8 +9,8 @@
         <h3>User Registration Form</h3>
 </div>
 <div class="ma-6 d-flex justify-center">
-    <MudCard Width= "800px">
-        <MudForm Model ="userDataJobModel">
+    <MudCard>
+        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" Model ="userDataJobModel">
             <MudCardContent>
                 <MudTextField @bind-Value="userDataJobModel.FirstName"                              
                 For="@(() => userDataJobModel.FirstName)"
@@ -22,18 +22,14 @@
                 Immediate="true"
                 Label="Last Name" />
 
-                <MudTextField @bind-Value="userDataJobModel.UserName"                              
-                For="@(() => userDataJobModel.UserName)"
-                Immediate="true"
-                Label="UserName" 
-                HelperText="Max. 8 characters"/>
-
                 <MudTextField @bind-Value="userDataJobModel.Email"                              
                 For="@(() => userDataJobModel.Email)"
                 Immediate="true"
-                Label="Email" />  
+                Label="Email" 
+                Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />  
                 
                 <MudRadioGroup T="VM_JobAgency.GenderOptions" Required="true" @bind-Value="userDataJobModel.Gender">
+                    <MudInputLabel>Gender</MudInputLabel>
                     @foreach (VM_JobAgency.GenderOptions gender in (VM_JobAgency.GenderOptions[])Enum.GetValues(typeof(VM_JobAgency.GenderOptions)))
                     {
                         <MudRadio T="VM_JobAgency.GenderOptions" Value="@gender" Label="@GetEnumDisplayName(gender)" />
@@ -53,6 +49,8 @@
 
 
                 <MudRadioGroup T="VM_JobAgency.FieldOfWorkOptions" Required="true" @bind-Value="userDataJobModel.FieldOfWork">
+                <MudInputLabel>Field of Work</MudInputLabel>
+
                 @foreach (VM_JobAgency.FieldOfWorkOptions fieldOfWork in (VM_JobAgency.FieldOfWorkOptions[])Enum.GetValues(typeof(VM_JobAgency.FieldOfWorkOptions)))
                 {
                     <MudRadio T="VM_JobAgency.FieldOfWorkOptions" Value="@fieldOfWork" Label="@GetEnumDisplayName(fieldOfWork)" />
@@ -75,14 +73,20 @@
                             Label="Desired Function" />
 
                 <MudRadioGroup T="VM_JobAgency.MotivationOptions" Required="true" @bind-Value="userDataJobModel.Motivation">
+                <MudInputLabel>Motivation behind search</MudInputLabel>
+
                 @foreach (VM_JobAgency.MotivationOptions motivation in (VM_JobAgency.MotivationOptions[])Enum.GetValues(typeof(VM_JobAgency.MotivationOptions)))
                 {
+                    <MudItem xs="12" md="2">
                     <MudRadio T="VM_JobAgency.MotivationOptions" Value="@motivation" Label="@GetEnumDisplayName(motivation)" />
+                    </MudItem>
                 }
                 </MudRadioGroup>
 
                 
                 <MudRadioGroup T="VM_JobAgency.LocationOptions" Required="true" @bind-Value="userDataJobModel.Location">
+                <MudInputLabel>Jobsite location</MudInputLabel>
+
                 @foreach (VM_JobAgency.LocationOptions location in (VM_JobAgency.LocationOptions[])Enum.GetValues(typeof(VM_JobAgency.LocationOptions)))
                 {
                     <MudRadio T="VM_JobAgency.LocationOptions" Value="@location" Label="@GetEnumDisplayName(location)" />
@@ -113,10 +117,10 @@
             @foreach (VM_JobAgency item in userJobData)
             {
                 <tr>
-                    <td>@item.FirstName</td>
-                    <td>@item.LastName</td>
-                    <td>@item.Gender</td>
-                    <td>@item.Experience</td>
+                    <td>Gender: @item.Gender</td>
+                    <td>FirstName: @item.FirstName</td>
+                    <td>LastName: @item.LastName</td>
+                    <td>Job Experience: @item.Experience</td>
                 </tr>
             }
         </MudSimpleTable>
@@ -127,6 +131,9 @@
 {
 
     bool success;
+    string[] errors = { };
+    MudForm form;
+
     VM_JobAgency userDataJobModel = new VM_JobAgency();
     List<VM_JobAgency> userJobData = new List<VM_JobAgency>();
 
@@ -138,14 +145,11 @@
 
     private async Task SubmitFields()
     {
-
-    await Http.PostAsJsonAsync(requestUri: "api/users/jobagency", userDataJobModel);
-    List<VM_JobAgency>? data = await Http.GetFromJsonAsync<List<VM_JobAgency>>(requestUri: "api/users/jobagency");
-    userJobData = data ?? new List<VM_JobAgency>();
-    if (data == null)
-    {
-        Debug.WriteLine("No data found from supplying Post");
-    }
+        await form.Validate();
+        if (!success) return;
+        await Http.PostAsJsonAsync(requestUri: "api/users/jobagency", userDataJobModel);
+        List<VM_JobAgency>? data = await Http.GetFromJsonAsync<List<VM_JobAgency>>(requestUri: "api/users/jobagency");
+        userJobData = data ?? new List<VM_JobAgency>();
     }
 
     private string GetEnumDisplayName(Enum value)
@@ -157,9 +161,10 @@
         return attribute?.Name ?? value.ToString();
     }
 
-        private void OnValidSubmit(EditContext context)
+    private void OnValidSubmit(EditContext context)
     {
         success = true;
+        StateHasChanged();
     }
 
 }

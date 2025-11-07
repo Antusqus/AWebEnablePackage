@@ -1,12 +1,14 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebEnablePackage", "WebEnablePackage\WebEnablePackage.csproj", "{EE74F4D6-3BBD-4566-91B7-48E844B91A9B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebEnablePackage.Client", "WebEnablePackage.Client\WebEnablePackage.Client.csproj", "{97902C0F-F856-4B76-A04A-F6B4025535F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLibrary", "DataAccess\DataLibrary.csproj", "{F0056678-1456-43CD-A2DB-68A879BD9F63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebEnablePackage.ViewModels", "WebEnablePackage.ViewModels\WebEnablePackage.ViewModels.csproj", "{EC611D6A-03A8-BFFB-08A4-0276684F9419}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,18 @@ Global
 		{F0056678-1456-43CD-A2DB-68A879BD9F63}.Release|x64.Build.0 = Release|Any CPU
 		{F0056678-1456-43CD-A2DB-68A879BD9F63}.Release|x86.ActiveCfg = Release|Any CPU
 		{F0056678-1456-43CD-A2DB-68A879BD9F63}.Release|x86.Build.0 = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|x64.Build.0 = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC611D6A-03A8-BFFB-08A4-0276684F9419}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
